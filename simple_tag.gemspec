@@ -7,8 +7,8 @@ require "simple_tag/version"
 Gem::Specification.new do |s|
   s.name        = "simple_tag"
   s.version     = SimpleTag::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
+  s.authors     = ["Yen-Ju Chen"]
+  s.email       = ["yjchenx@gmail.com"]
   s.homepage    = "TODO"
   s.summary     = "TODO: Summary of SimpleTag."
   s.description = "TODO: Description of SimpleTag."
