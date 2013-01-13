@@ -17,29 +17,28 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
 ### Tagger
 
-  tagger.tags - tags owned by tagger
+  You need to define __acts_as_tagger__ in tagger model.
 
-### Tag
-
-  tag.taggers - taggers who use this tag
-  tag.taggables - records which is tagged with this tag
+    tagger.tags: tags owned by tagger
 
 ### Taggable
+  
+  You need to define __acts_as_taggable__ in tagger model.
 
-  taggable.tags - return tags associated with this taggable
-  taggable.tags= - set tags of this taggable
-  taggable.set_tags - set tags of this taggable
-  taggable.add_tags - add more tags to this taggable
-  taggable.remove_tags - remove tags of this taggable
+    taggable.tags: return tags associated with this taggable
+    taggable.tags=: set tags of this taggable
+    taggable.set_tags: set tags of this taggable
+    taggable.add_tags: add more tags to this taggable
+    taggable.remove_tags: remove tags of this taggable
 
   All of these methods (except tags=) can add :context and :tagger as optioanl parameters.
   For example:
 
-  taggable.tags :context => 'skill', :tagger => current_user
+    taggable.tags :context => 'skill', :tagger => current_user
 
   :context and :tagger also accept number as id for faster database query:
 
-  taggable.add_tags, :context => 'skill', :tagger => current_user.id
+    taggable.add_tags, :context => 'skill', :tagger => current_user.id
 
   If not specified, default context is 'tag' and default tagger is nil.
 
@@ -47,13 +46,29 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
   divide tags.
   Delimiter can be specify in :delimiter, for example
 
-  taggable.set_tags 'rails; ruby', :context => 'skill', :delimiter => ';'
+    taggable.set_tags 'rails; ruby', :context => 'skill', :delimiter => ';'
+
   Space, sigle and double quotation will be trimmed automatically.
   For more complicated processing of tag string, use blokc:
 
-  taggable.set_tags 'rails; ruby', :context => 'skill' do |string|
-    return string.split(',')
-  end
+    taggable.set_tags 'rails; ruby', :context => 'skill' do |string|
+      return string.split(',')
+    end
+
+### Tag
+
+    tag.taggers: taggers who use this tag
+    tag.taggables: records which is tagged with this tag
+
+### Tagging
+
+### Tag Context
+
+## FAQ
+
+* How do I get tag list from an array of SimpleTag::Tag
+
+  tags.pluck(:name).join(', ')
 
 ## Acknowledges
 

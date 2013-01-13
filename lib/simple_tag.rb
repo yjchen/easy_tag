@@ -12,6 +12,8 @@ if defined?(ActiveRecord::Base)
     def self.acts_as_tagger(options = {})
       options.reverse_merge!({})
       include SimpleTag::Tagger
+
+      SimpleTag::Tagger.class_variable_set(:@@tagger_class, self)
     end
   end
 end

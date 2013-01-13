@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130113020310) do
+ActiveRecord::Schema.define(:version => 20130113033722) do
 
   create_table "comments", :force => true do |t|
     t.string   "name"
@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(:version => 20130113020310) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "tag_context", :force => true do |t|
+  create_table "tag_contexts", :force => true do |t|
     t.string "name"
   end
 
