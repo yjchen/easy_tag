@@ -25,7 +25,6 @@ module SimpleTag
 
       tags.each do |t|
         tag = SimpleTag::Tag.where(:name => t).first_or_create
-        p tag
         raise SimgleTag::InvalidTag if tag.nil?
         self.taggings.where(:tagger_id => tagger.try(:id), :tag_context_id => context.try(:id), :tag_id => tag.id).first_or_create
       end
@@ -66,7 +65,7 @@ module SimpleTag
         tag_list.downcase! if downcase
         tag_list.to_tags
       elsif (tag_list.is_a?(Array))
-        tag_list.collect { |t| t.downcase! }
+        tag_list.collect { |t| t.downcase }
       else
         raise SimpleTag::InvalidTagList
       end

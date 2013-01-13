@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130113033722) do
+ActiveRecord::Schema.define(:version => 20130113063142) do
 
   create_table "comments", :force => true do |t|
     t.string   "name"
@@ -25,11 +25,11 @@ ActiveRecord::Schema.define(:version => 20130113033722) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "tag_contexts", :force => true do |t|
+  create_table "simple_tag_tag_contexts", :force => true do |t|
     t.string "name"
   end
 
-  create_table "taggings", :force => true do |t|
+  create_table "simple_tag_taggings", :force => true do |t|
     t.integer  "tag_id"
     t.integer  "tag_context_id"
     t.integer  "tagger_id"
@@ -38,12 +38,12 @@ ActiveRecord::Schema.define(:version => 20130113033722) do
     t.datetime "created_at"
   end
 
-  add_index "taggings", ["tag_context_id"], :name => "index_taggings_on_tag_context_id"
-  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
-  add_index "taggings", ["taggable_id", "taggable_type"], :name => "index_taggings_on_taggable_id_and_taggable_type"
-  add_index "taggings", ["tagger_id"], :name => "index_taggings_on_tagger_id"
+  add_index "simple_tag_taggings", ["tag_context_id"], :name => "index_simple_tag_taggings_on_tag_context_id"
+  add_index "simple_tag_taggings", ["tag_id"], :name => "index_simple_tag_taggings_on_tag_id"
+  add_index "simple_tag_taggings", ["taggable_id", "taggable_type"], :name => "index_simple_tag_taggings_on_taggable_id_and_taggable_type"
+  add_index "simple_tag_taggings", ["tagger_id"], :name => "index_simple_tag_taggings_on_tagger_id"
 
-  create_table "tags", :force => true do |t|
+  create_table "simple_tag_tags", :force => true do |t|
     t.string "name"
   end
 

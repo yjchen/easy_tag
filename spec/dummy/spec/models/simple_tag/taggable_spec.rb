@@ -12,7 +12,7 @@ describe SimpleTag do
       comment = Comment.new(:name => 'comment')
       expect {
         post.set_tags(['ruby', 'RVM'])
-      }.to change(SimpleTag::Tag, :count).by(2)
+      }.to change(SimpleTag::Tag, :count).by(1)
       SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby', 'rvm'])
     end
     
@@ -20,6 +20,22 @@ describe SimpleTag do
       post = Post.new(:name => 'post')
       post.set_tags('Rails, RUBY')
       SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby'])
+    end
+  end
+
+  describe 'with context and without tagger' do
+    it 'set tags' do
+      post = Post.new(:name => 'post')
+      expect {
+        post.set_tags('rails, ruby', :context => 'topic')
+      }.to change(SimpleTag::Tag, :count).by(2)
+      SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby'])
+
+      comment = Comment.new(:name => 'comment')
+      expect {
+        post.set_tags(['ruby', 'RVM'], :context => 'skill')
+      }.to change(SimpleTag::Tag, :count).by(1)
+      SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby', 'rvm'])
     end
   end
 
