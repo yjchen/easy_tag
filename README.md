@@ -17,7 +17,13 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
 ### Tagger
 
-  You need to define __acts_as_tagger__ in tagger model.
+  You need to define __acts_as_tagger__ in tagger model like this:
+
+    class User < ActiveRecord::Base
+      acts_as_tagger
+    end
+
+  You can find tags of tagger:
 
     tagger.tags: tags owned by tagger
 
@@ -27,11 +33,17 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
 ### Taggable
   
-  You need to define __acts_as_taggable__ in tagger model.
+  You need to define __acts_as_taggable__ in tagger model like this:
+
+    class Post < ActiveRecord::Base
+      acts_as_taggable
+    end
+
+  You can manage tags of taggable
 
     taggable.tags: return tags associated with this taggable
-    taggable.tags=: set tags of this taggable
-    taggable.set_tags: set tags of this taggable
+    taggable.tags=: set tags of this taggable without context and tagger
+    taggable.set_tags: set tags of this taggable and remove old tags
     taggable.add_tags: add more tags to this taggable
     taggable.remove_tags: remove tags of this taggable
 
@@ -67,7 +79,7 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
     taggable.tags.with_tagger(User.first)
 
-  __in_context__ and __with_tagger__ can be chained together.
+  __in_context__ and __with_tagger__ can be chained together. They are methods in scopes.
 
 ### Tag
 
@@ -84,7 +96,11 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
 ### Tagging
 
+  No public methods for now. 
+
 ### Tag Context
+
+  No public methods for now.
 
 ## FAQ
 
@@ -95,3 +111,7 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 ## Acknowledges
 
 SimpleTag is heavily influenced by [rocket_tag](https://github.com/bradphelan/rocket_tag), but not a direct fork.
+
+## License
+
+MIT
