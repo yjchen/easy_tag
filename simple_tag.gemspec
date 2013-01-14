@@ -9,11 +9,11 @@ Gem::Specification.new do |s|
   s.version     = SimpleTag::VERSION
   s.authors     = ["Yen-Ju Chen"]
   s.email       = ["yjchenx@gmail.com"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of SimpleTag."
-  s.description = "TODO: Description of SimpleTag."
+  s.homepage    = "https://github.com/yjchen/simple_tag"
+  s.summary     = "A very simple tagging system for Rails"
+  s.description = "A very simple tagging system for Rails to be forked or extended."
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
 
   s.add_dependency "rails", "~> 3.2.11"
   # s.add_dependency "jquery-rails"

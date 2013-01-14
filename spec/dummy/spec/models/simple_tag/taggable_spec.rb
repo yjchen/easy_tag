@@ -2,6 +2,30 @@ require 'spec_helper'
 
 describe SimpleTag do
   describe 'without context and tagger' do
+    it 'no context' do
+      post = Post.create(:name => 'post')
+      expect {
+        post.set_tags('rails, ruby')
+      }.to change(SimpleTag::TagContext, :count).by(0)
+    end
+
+    it 'clean old tags' do
+      post = Post.create(:name => 'post')
+      expect {
+        post.set_tags('rails, ruby')
+      }.to change(SimpleTag::Tag, :count).by(2)
+      SimpleTag::Tagging.count.should eq(2)
+      post.taggings.count.should eq(2)
+      post.tags.pluck(:name).should match_array(['rails', 'ruby'])
+
+      expect {
+        post.set_tags('java, jruby')
+      }.to change(SimpleTag::Tag, :count).by(2)
+      SimpleTag::Tagging.count.should eq(2)
+      post.taggings.count.should eq(2)
+      post.tags.pluck(:name).should match_array(['java', 'jruby'])
+    end
+
     it 'set tags' do
       post = Post.create(:name => 'post')
       expect {
@@ -49,6 +73,25 @@ describe SimpleTag do
     end
   end
 
+  describe 'with context and wit tagger' do
+    it 'set tags' do
+      post = Post.create(:name => 'post')
+      user = User.create(:name => 'bob')
+
+      expect {
+        post.set_tags('rails, ruby', :context => 'ruby', :tagger => user)
+      }.to change(SimpleTag::Tag, :count).by(2)
+
+      user.tags.pluck(:name).should match_array(['rails', 'ruby'])
+
+      post.set_tags('jruby', :context => 'java')
+      user.tags.pluck(:name).should match_array(['rails', 'ruby'])
+
+      post.set_tags('java', :tagger => user)
+      user.tags.pluck(:name).should match_array(['rails', 'ruby', 'java'])
+    end
+  end
+
   describe 'Basic' do
     it 'is taggable' do
       post = Post.new(:name => 'post')
@@ -57,9 +100,7 @@ describe SimpleTag do
 
     it 'is not taggable' do
       user = User.new(:name => 'user')
-      expect {
-        user.is_taggable?
-      }.to raise_error(NoMethodError)
+      user.is_taggable?.should be_false
     end
   end
 

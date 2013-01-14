@@ -10,9 +10,7 @@ describe SimpleTag do
 
     it 'is not tagger' do
       post = Post.new(:name => 'user')
-      expect {
-        post.is_tagger?
-      }.to raise_error(NoMethodError)
+      post.is_tagger?.should be_false
     end
   end
 end

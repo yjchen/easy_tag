@@ -46,7 +46,7 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
   If not specified, default context is nil and default tagger is nil.
 
-  Tags should be array of strings, or by default, string with comma(,) to 
+  Tags should be an array of strings, or by default, a string with comma(,) to 
   divide tags.
   Delimiter can be specify in :delimiter, for example
 
