@@ -108,11 +108,13 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
     tags.pluck(:name).join(', ')
 
+
 * What's the difference between these two:
 
     user.posts.tags
 
     user.posts.by_tagger(user)
+
 
   The first return all tags associated with posts, including tags tagged by others. The second return all tags associated with posts AND tagged by tagger.
 
