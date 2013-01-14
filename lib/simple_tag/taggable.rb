@@ -17,7 +17,7 @@ module SimpleTag
           where('simple_tag_taggings.tag_context_id = ?', context_id)
         end
 
-        def with_tagger(tagger)
+        def by_tagger(tagger)
           where('1 == 1')
         end
       end

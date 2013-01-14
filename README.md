@@ -77,9 +77,9 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
   To retreieve tags tagged by a tagger, use
 
-    taggable.tags.with_tagger(User.first)
+    taggable.tags.by_tagger(User.first)
 
-  __in_context__ and __with_tagger__ can be chained together. They are methods in scopes.
+  __in_context__ and __by_tagger__ can be chained together. They are methods in scopes.
 
 ### Tag
 
@@ -106,7 +106,15 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
 * How do I get tag list from an array of SimpleTag::Tag
 
-  tags.pluck(:name).join(', ')
+    tags.pluck(:name).join(', ')
+
+* What's the difference between these two:
+
+    user.posts.tags
+
+    user.posts.by_tagger(user)
+
+  The first return all tags associated with posts, including tags tagged by others. The second return all tags associated with posts AND tagged by tagger.
 
 ## Acknowledges
 
