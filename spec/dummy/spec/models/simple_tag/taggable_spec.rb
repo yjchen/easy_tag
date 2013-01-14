@@ -3,19 +3,21 @@ require 'spec_helper'
 describe SimpleTag do
   describe 'without context and tagger' do
     it 'set tags' do
-      post = Post.new(:name => 'post')
+      post = Post.create(:name => 'post')
       expect {
         post.set_tags('rails, ruby')
       }.to change(SimpleTag::Tag, :count).by(2)
       SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby'])
 
-      post.tags.count.should be(2)
+      post.tags.pluck(:name).should match_array(['rails', 'ruby'])
 
-      comment = Comment.new(:name => 'comment')
+      comment = Comment.create(:name => 'comment')
       expect {
-        post.set_tags(['ruby', 'RVM'])
+        comment.set_tags(['ruby', 'RVM'])
       }.to change(SimpleTag::Tag, :count).by(1)
       SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby', 'rvm'])
+
+      comment.tags.pluck(:name).should match_array(['ruby', 'rvm'])
     end
     
     it 'set tags in downcase' do

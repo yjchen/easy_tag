@@ -84,6 +84,7 @@ module SimpleTag
     end
 
     def compact_tagger(tagger)
+      return nil unless SimpleTag::Tagger.class_variable_defined?(:@@tagger_class)
       klass = SimpleTag::Tagger.class_variable_get(:@@tagger_class)
       if (tagger.is_a?(String) || tagger.is_a?(Symbol))
         return klass.where(:name => tagger.to_s).first_or_create
