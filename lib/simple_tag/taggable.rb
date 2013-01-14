@@ -16,6 +16,10 @@ module SimpleTag
           end
           where('simple_tag_taggings.tag_context_id = ?', context_id)
         end
+
+        def with_tagger(tagger)
+          where('1 == 1')
+        end
       end
     end # end of included
 

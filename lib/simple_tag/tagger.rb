@@ -5,6 +5,11 @@ module SimpleTag
     included do
       has_many :taggings, :as => :tagger, :dependent => :destroy,
                :class_name => 'SimpleTag::Tagging'
+      has_many :tags, :through => :taggings do
+        def in_context(context)
+          return where('1 == 1')
+        end
+      end
     end # end of included
 
     module ClassMethods

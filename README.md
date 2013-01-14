@@ -21,6 +21,10 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
     tagger.tags: tags owned by tagger
 
+  Tags in a context can be retrieve like this:
+
+    tagger.tags.in_context(:skill)
+
 ### Taggable
   
   You need to define __acts_as_taggable__ in tagger model.
@@ -49,7 +53,7 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
     taggable.set_tags 'rails; ruby', :context => 'skill', :delimiter => ';'
 
   Space, sigle and double quotation will be trimmed automatically.
-  For more complicated processing of tag string, use blokc:
+  For more complicated processing of tag string, use block:
 
     taggable.set_tags 'rails; ruby', :context => 'skill' do |string|
       return string.split(',')
@@ -63,10 +67,20 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
     taggable.tags.with_tagger(User.first)
 
+  __in_context__ and __with_tagger__ can be chained together.
+
 ### Tag
 
     tag.taggers: taggers who use this tag
     tag.taggables: records which is tagged with this tag
+
+  To retrieve tags in a context, use
+
+    tags.in_context(:skill)
+
+  To retreieve tags tagged by a tagger, use
+
+    tagger.tags
 
 ### Tagging
 
