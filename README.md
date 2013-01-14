@@ -104,12 +104,12 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
 ## FAQ
 
-How do I get tag list from an array of SimpleTag::Tag
+#### How do I get tag list from an array of SimpleTag::Tag ?
 
     tags.pluck(:name).join(', ')
 
 
-What's the difference between these two:
+#### What's the difference between these two ?
 
     user.posts.tags
 
