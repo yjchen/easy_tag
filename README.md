@@ -104,19 +104,19 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
 ## FAQ
 
-* How do I get tag list from an array of SimpleTag::Tag
+How do I get tag list from an array of SimpleTag::Tag
 
     tags.pluck(:name).join(', ')
 
 
-* What's the difference between these two:
+What's the difference between these two:
 
     user.posts.tags
 
     user.posts.by_tagger(user)
 
 
-  The first return all tags associated with posts, including tags tagged by others. The second return all tags associated with posts AND tagged by tagger.
+The first return all tags associated with posts, including tags tagged by others. The second return all tags associated with posts AND tagged by tagger.
 
 ## Acknowledges
 
