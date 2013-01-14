@@ -9,6 +9,8 @@ describe SimpleTag do
       }.to change(SimpleTag::Tag, :count).by(2)
       SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby'])
 
+      post.tags.count.should be(2)
+
       comment = Comment.new(:name => 'comment')
       expect {
         post.set_tags(['ruby', 'RVM'])
