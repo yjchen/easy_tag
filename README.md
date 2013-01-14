@@ -25,11 +25,13 @@ This gem is used in my other projects, thus, it will be kept updated, albeit slo
       acts_as_tagger
     end
 
+  Only **ONE** model can be tagger.
+
   You can find tags of tagger:
 
-    tagger.tags: tags owned by tagger
+    tagger.tags
 
-  Tags in a context can be retrieve like this:
+  Tags in a context can be retrieved like this:
 
     tagger.tags.in_context(:skill)
 
@@ -46,8 +48,6 @@ This gem is used in my other projects, thus, it will be kept updated, albeit slo
     taggable.tags: return tags associated with this taggable
     taggable.tags=: set tags of this taggable without context and tagger
     taggable.set_tags: set tags of this taggable and remove old tags
-    taggable.add_tags: add more tags to this taggable
-    taggable.remove_tags: remove tags of this taggable
 
   All of setting methods (except tags=) can add :context and :tagger as optioanl parameters.
   For example:
@@ -56,7 +56,7 @@ This gem is used in my other projects, thus, it will be kept updated, albeit slo
 
   :context and :tagger also accept number as id for faster database query:
 
-    taggable.add_tags, :context => 'skill', :tagger => current_user.id
+    taggable.set_tags, :context => 'skill', :tagger => current_user.id
 
   If not specified, default context is nil and default tagger is nil.
 
@@ -86,7 +86,7 @@ This gem is used in my other projects, thus, it will be kept updated, albeit slo
 ### Tag
 
     tag.taggers: taggers who use this tag
-    tag.taggables: records which is tagged with this tag
+    tag.taggings.collect(&:taggable): array of taggable tagged with this tag
 
   To retrieve tags in a context, use
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130113063142) do
+ActiveRecord::Schema.define(:version => 20130114150014) do
 
   create_table "comments", :force => true do |t|
     t.string   "name"
@@ -26,7 +26,9 @@ ActiveRecord::Schema.define(:version => 20130113063142) do
   end
 
   create_table "simple_tag_tag_contexts", :force => true do |t|
-    t.string "name"
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "simple_tag_taggings", :force => true do |t|
@@ -35,7 +37,8 @@ ActiveRecord::Schema.define(:version => 20130113063142) do
     t.integer  "tagger_id"
     t.integer  "taggable_id"
     t.string   "taggable_type"
-    t.datetime "created_at"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   add_index "simple_tag_taggings", ["tag_context_id"], :name => "index_simple_tag_taggings_on_tag_context_id"
@@ -44,7 +47,9 @@ ActiveRecord::Schema.define(:version => 20130113063142) do
   add_index "simple_tag_taggings", ["tagger_id"], :name => "index_simple_tag_taggings_on_tagger_id"
 
   create_table "simple_tag_tags", :force => true do |t|
-    t.string "name"
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "users", :force => true do |t|
