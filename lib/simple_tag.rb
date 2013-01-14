@@ -30,10 +30,6 @@ if defined?(ActiveRecord::Base)
       include SimpleTag::Tagger
 
       SimpleTag::Tagger.class_variable_set(:@@tagger_class, self)
-      self.has_many :taggings, :dependent => :destroy, 
-                               :class_name => 'SimpleTag::Tagging',
-                               :foreign_key => 'tagger_id'
-      self.has_many :tags, :through => :taggings
       SimpleTag::Tagging.belongs_to :tagger, :class_name => self.model_name
     end
   end

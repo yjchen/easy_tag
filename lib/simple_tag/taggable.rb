@@ -9,7 +9,7 @@ module SimpleTag
         def in_context(context)
           if context.is_a?(String) || context.is_a?(Symbol)
             context_id = SimpleTag::TagContext.where(:name => context.to_s).first
-          elsif context.is_a?(Number)
+          elsif context.is_a?(Integer)
             context_id = context
           else
             raise SimpleTag::InvalidContext
@@ -18,7 +18,14 @@ module SimpleTag
         end
 
         def by_tagger(tagger)
-          where('1 == 1')
+          if tagger.is_tagger?
+            tagger_id = tagger.id
+          elsif tagger.is_a?(Integer)
+            tagger_id = tagger
+          else
+            raise SimpleTag::InvalidTagger
+          end
+          where('simple_tag_taggings.tagger_id = ?', tagger_id)
         end
       end
     end # end of included

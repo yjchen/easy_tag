@@ -89,6 +89,13 @@ describe SimpleTag do
 
       post.set_tags('java', :tagger => user)
       user.tags.pluck(:name).should match_array(['rails', 'ruby', 'java'])
+
+      post.tags.pluck(:name).should match_array(['rails', 'ruby', 'jruby', 'java'])
+      post.tags.in_context(:ruby).pluck(:name).should match_array(['rails', 'ruby'])
+      post.tags.in_context(:java).pluck(:name).should match_array(['jruby'])
+      post.tags.in_context(:ruby).by_tagger(user).pluck(:name).should match_array(['rails', 'ruby'])
+      post.tags.in_context(:java).by_tagger(user).pluck(:name).should be_empty
+      post.tags.by_tagger(user).pluck(:name).should match_array(['rails', 'ruby', 'java'])
     end
   end
 

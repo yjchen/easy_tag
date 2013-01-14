@@ -2,6 +2,8 @@
 
 This is a very simple tagging system for Rails. Because it is so simple, you should fork and modify it for your own purpose.
 
+This gem is used in my other projects, thus, it will be kept updated, albeit slowly.
+
 ## Install
 
     rails generate simple_tag:migration
@@ -60,15 +62,15 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
   Tags should be an array of strings, or by default, a string with comma(,) to 
   divide tags.
-  Delimiter can be specify in :delimiter, for example
+  Delimiter can be specified in :delimiter, for example:
 
     taggable.set_tags 'rails; ruby', :context => 'skill', :delimiter => ';'
 
-  Space, sigle and double quotation will be trimmed automatically.
+  Space, single and double quotation will be trimmed automatically.
   For more complicated processing of tag string, use block:
 
-    taggable.set_tags 'rails; ruby', :context => 'skill' do |string|
-      return string.split(',')
+    taggable.set_tags 'rails; ruby', :context => 'skill' do |tag_list|
+      return tag_list.split(',')
     end
 
   To retrieve tags in a context, use
@@ -98,13 +100,19 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
 
   No public methods for now. 
 
+  This is the core model to link together tag, context, taggable and tagger. 
+  If you need to work on low-level database query, you probably need to look
+  at this one.
+
 ### Tag Context
 
   No public methods for now.
 
+  Just a place to keep records on tag context.
+
 ## FAQ
 
-#### How do I get tag list from an array of SimpleTag::Tag ?
+#### How do I get tag list from returned SimpleTag::Tag ?
 
     tags.pluck(:name).join(', ')
 
