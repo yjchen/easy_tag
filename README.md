@@ -31,16 +31,16 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
     taggable.add_tags: add more tags to this taggable
     taggable.remove_tags: remove tags of this taggable
 
-  All of these methods (except tags=) can add :context and :tagger as optioanl parameters.
+  All of setting methods (except tags=) can add :context and :tagger as optioanl parameters.
   For example:
 
-    taggable.tags :context => 'skill', :tagger => current_user
+    taggable.set_tags ['ruby', 'rvm'], :context => 'skill', :tagger => current_user
 
   :context and :tagger also accept number as id for faster database query:
 
     taggable.add_tags, :context => 'skill', :tagger => current_user.id
 
-  If not specified, default context is 'tag' and default tagger is nil.
+  If not specified, default context is nil and default tagger is nil.
 
   Tags should be array of strings, or by default, string with comma(,) to 
   divide tags.
@@ -54,6 +54,14 @@ This is a very simple tagging system for Rails. Because it is so simple, you sho
     taggable.set_tags 'rails; ruby', :context => 'skill' do |string|
       return string.split(',')
     end
+
+  To retrieve tags in a context, use
+
+    taggable.tags.in_context(:skill)
+
+  To retreieve tags tagged by a tagger, use
+
+    taggable.tags.with_tagger(User.first)
 
 ### Tag
 

@@ -29,17 +29,23 @@ describe SimpleTag do
 
   describe 'with context and without tagger' do
     it 'set tags' do
-      post = Post.new(:name => 'post')
+      post = Post.create(:name => 'post')
       expect {
-        post.set_tags('rails, ruby', :context => 'topic')
-      }.to change(SimpleTag::Tag, :count).by(2)
-      SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby'])
+        post.set_tags('rails, ruby', :context => 'ruby')
+      }.to change(SimpleTag::TagContext, :count).by(1)
+      expect {
+        post.set_tags('jruby', :context => 'java')
+      }.to change(SimpleTag::TagContext, :count).by(1)
+      SimpleTag::TagContext.pluck(:name).should match_array(['ruby', 'java'])
+      post.tags.pluck(:name).should match_array(['rails', 'ruby', 'jruby'])
+      post.tags.in_context(:ruby).pluck(:name).should match_array(['rails', 'ruby'])
+      post.tags.in_context(:java).pluck(:name).should match_array(['jruby'])
 
-      comment = Comment.new(:name => 'comment')
-      expect {
-        post.set_tags(['ruby', 'RVM'], :context => 'skill')
-      }.to change(SimpleTag::Tag, :count).by(1)
-      SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby', 'rvm'])
+      comment = Comment.create(:name => 'comment')
+      comment.set_tags(['ruby', 'RVM'], :context => 'ruby')
+      SimpleTag::TagContext.pluck(:name).should match_array(['ruby', 'java'])
+      comment.tags.pluck(:name).should match_array(['ruby', 'rvm'])
+      comment.tags.in_context(:ruby).pluck(:name).should match_array(['ruby', 'rvm'])
     end
   end
 
@@ -76,6 +82,11 @@ describe SimpleTag do
     it 'remove mixed quote' do
       s = "\"ruby\"  , 'ruby on rails', tag    "
       s.to_tags.should match_array(['ruby', 'ruby on rails', 'tag'])
+    end
+
+    it 'set delimiter' do
+      s = 'ruby; rails; tag'
+      s.to_tags(';').should match_array(['ruby', 'rails', 'tag'])
     end
   end
 end

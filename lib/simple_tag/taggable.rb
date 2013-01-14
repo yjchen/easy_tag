@@ -5,19 +5,33 @@ module SimpleTag
     included do
       has_many :taggings, :as => :taggable, :dependent => :destroy,
                :class_name => 'SimpleTag::Tagging'
-      has_many :tags, :through => :taggings
+      has_many :tags, :through => :taggings do
+        def in_context(context)
+          if context.is_a?(String) || context.is_a?(Symbol)
+            context_id = SimpleTag::TagContext.where(:name => context.to_s).first
+          elsif context.is_a?(Number)
+            context_id = context
+          else
+            raise SimpleTag::InvalidContext
+          end
+          where('simple_tag_taggings.tag_context_id = ?', context_id)
+        end
+      end
     end # end of included
 
     module ClassMethods
     end # end of class methods
 
     def set_tags(tag_list, options = {})
-      options.reverse_merge! :context => :tag, :tagger => nil, :downcase => true
+      options.reverse_merge! :context => :nil, 
+                             :tagger => nil, 
+                             :downcase => true,
+                             :delimiter => ','
 
       if block_given?
         tags = yield(klass)
       else
-        tags = compact_tag_list(tag_list, options[:downcase])
+        tags = compact_tag_list(tag_list, options[:downcase], options[:delimiter])
       end
 
       context = compact_context(options[:context])
@@ -60,10 +74,10 @@ module SimpleTag
 
     protected
 
-    def compact_tag_list(tag_list, downcase = false)
+    def compact_tag_list(tag_list, downcase = false, delimiter = ',')
       if (tag_list.is_a?(String))
         tag_list.downcase! if downcase
-        tag_list.to_tags
+        tag_list.to_tags(delimiter)
       elsif (tag_list.is_a?(Array))
         tag_list.collect { |t| t.downcase }
       else
@@ -100,8 +114,8 @@ module SimpleTag
 end
 
 class String
-  def to_tags
-    self.split(',').collect do |t|
+  def to_tags(delimiter = ',')
+    self.split(delimiter).collect do |t|
       t.strip.gsub(/\A["']|["']\Z/, '')
     end
   end
