@@ -5,7 +5,7 @@ module SimpleTag
     included do
       has_many :taggings, :as => :taggable, :dependent => :destroy,
                :class_name => 'SimpleTag::Tagging'
-      has_many :tags, :through => :taggings do
+      has_many :tags, :through => :taggings, :uniq => true do
         def in_context(context)
           if context.is_a?(String) || context.is_a?(Symbol)
             context_id = SimpleTag::TagContext.where(:name => context.to_s).first
