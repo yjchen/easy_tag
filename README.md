@@ -87,7 +87,7 @@ This gem is used in my other projects, thus, it will be kept updated, albeit slo
 
     Taggable.with_tags('ruby, rvm', :match => :any)
 
-  Options for __:match__ can be :any (default), :all.
+  Options for __:match__ can be :any (default), :all (expensive).
 
   __with_tags__ can also be used with __in_context__ and __by_tagger __
 
@@ -132,7 +132,15 @@ This gem is used in my other projects, thus, it will be kept updated, albeit slo
     user.posts.by_tagger(user)
 
 
-The first return all tags associated with posts, including tags tagged by others. The second return all tags associated with posts AND tagged by tagger.
+The first returns all tags associated with posts, including tags tagged by others. The second return all tags associated with posts AND tagged by tagger.
+
+#### What's the difference between these two ?
+
+    Post.with_tags('ruby')
+
+    Post.with_tags('ruby').in_context(nil)
+
+The first returns all tags with 'ruby', regardless the context. In another word, it return all taggables with any context. The second returns all tags with 'ruby' with context is nil. In another word, it will not return taggables with context. The same idea applies to __by_tagger__.
 
 ## Acknowledges
 
