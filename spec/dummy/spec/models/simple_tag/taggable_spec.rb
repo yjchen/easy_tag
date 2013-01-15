@@ -1,6 +1,31 @@
 require 'spec_helper'
 
 describe SimpleTag do
+  describe 'taggable with_tags' do
+    it 'return match any tag' do
+      post = Post.create(:name => 'post')
+      post.set_tags('rails, ruby')
+      java = Post.create(:name => 'java')
+      java.set_tags('java, jsp')
+      jruby = Post.create(:name => 'jruby')
+      jruby.set_tags('ruby, jruby')
+      comment = Comment.create(:name => 'comment')
+      comment.set_tags('rails, ruby')
+
+      Post.with_tags('ruby').count.should eq(2)
+      Post.with_tags('ruby').pluck(:name).should match_array(['post', 'jruby'])
+
+      Post.with_tags('java, jruby').count.should eq(2)
+      Post.with_tags('java, jruby').pluck(:name).should match_array(['java', 'jruby'])
+
+      Post.with_tags('rails, ruby').to_a.count.should eq(2)
+      Post.with_tags('rails, ruby').pluck(:name).should match_array(['post', 'jruby'])
+
+      Post.with_tags('rails, ruby', {:match => :all}).to_a.count.should eq(1)
+      Post.with_tags('rails, ruby', {:match => :all}).pluck(:name).should match_array(['post'])
+    end
+  end
+
   describe 'without context and tagger' do
     it 'no context' do
       post = Post.create(:name => 'post')

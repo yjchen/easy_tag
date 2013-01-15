@@ -27,6 +27,44 @@ module SimpleTag
           end
           where('simple_tag_taggings.tagger_id = ?', tagger_id)
         end
+      end # end of has_many :tags
+
+      scope :with_tags, ->(tag_list, options = {}) {
+        options.reverse_merge! :match => :any
+
+        if block_given?
+          tags = yield(klass)
+        else
+          tags = SimpleTag::Tag.compact_tag_list(tag_list, options.slice(:downcase, :delimiter))
+        end
+
+        query = tags.collect { |t| "name = '#{t}'" }.join(' OR ')
+        tag_ids = SimpleTag::Tag.where(query).pluck(:id)
+
+        if options[:match] == :all
+          ids = nil
+          tag_ids.each do |tag_id|
+            taggable_ids = SimpleTag::Tagging.where(:tag_id => tag_id).where(:taggable_type => self.model_name).pluck(:taggable_id).to_a
+            if ids
+              ids = ids & taggable_ids
+            else
+              ids = taggable_ids # first tag
+            end
+          end
+          joins(:taggings).where(:id => ids)
+        else
+          # :any
+          joins(:taggings).where('simple_tag_taggings.tag_id' => tag_ids).uniq
+        end
+
+      } do
+        def in_context(context)
+          where("1 == 1")
+        end
+
+        def by_tagger(tagger)
+          where("1 == 1")
+        end
       end
     end # end of included
 
@@ -42,7 +80,7 @@ module SimpleTag
       if block_given?
         tags = yield(klass)
       else
-        tags = compact_tag_list(tag_list, options[:downcase], options[:delimiter])
+        tags = SimpleTag::Tag.compact_tag_list(tag_list, options.slice(:downcase, :delimiter))
       end
 
       context = compact_context(options[:context])
@@ -63,42 +101,11 @@ module SimpleTag
       self.set_tags(tag_list)
     end
 
-    def add_tags(tag_list, options = {})
-      options.reverse_merge! :context => nil, :tagger => nil
-
-      if block_given?
-        tags = yield(klass)
-      else
-        tags = compact_tag_list(tag_list, options[:downcase])
-      end
-    end
-
-    def remove_tags(tag_list, options = {})
-      options.reverse_merge! :context => nil, :tagger => nil
-
-      if block_given?
-        tags = yield(klass)
-      else
-        tags = compact_tag_list(tag_list, options[:downcase])
-      end
-    end
-
     def is_taggable?
       return true
     end
 
     protected
-
-    def compact_tag_list(tag_list, downcase = false, delimiter = ',')
-      if (tag_list.is_a?(String))
-        tag_list.downcase! if downcase
-        tag_list.to_tags(delimiter)
-      elsif (tag_list.is_a?(Array))
-        tag_list.collect { |t| t.downcase }
-      else
-        raise SimpleTag::InvalidTagList
-      end
-    end
 
     def compact_context(context)
       return nil if context.blank?

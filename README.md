@@ -83,6 +83,14 @@ This gem is used in my other projects, thus, it will be kept updated, albeit slo
 
   __in_context__ and __by_tagger__ can be chained together. They are methods in scopes.
 
+  To retrieve taggable tagged with tags, use
+
+    Taggable.with_tags('ruby, rvm', :match => :any)
+
+  Options for __:match__ can be :any (default), :all.
+
+  __with_tags__ can also be used with __in_context__ and __by_tagger __
+
 ### Tag
 
     tag.taggers: taggers who use this tag

@@ -2,6 +2,21 @@ require 'spec_helper'
 
 describe SimpleTag do
   describe SimpleTag::Tag do
+    it 'compact tag list' do
+      tags = SimpleTag::Tag.compact_tag_list('ruby, rails')
+      tags.should match_array(['ruby', 'rails'])
+
+      tags = SimpleTag::Tag.compact_tag_list(['ruby', 'rails'])
+      tags.should match_array(['ruby', 'rails'])
+
+      tags = SimpleTag::Tag.compact_tag_list('ruby; rails', {:delimiter => ';'})
+      tags.should match_array(['ruby', 'rails'])
+
+      tags = SimpleTag::Tag.compact_tag_list('ruby; Rails', {:delimiter => ';', :downcase => true})
+      tags.should match_array(['ruby', 'rails'])
+
+    end
+    
     it 'can get taggable' do
       post = Post.create(:name => 'post')
       comment = Comment.create(:name => 'comment')
