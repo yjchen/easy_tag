@@ -44,6 +44,7 @@ module SimpleTag
         if options[:match] == :all
           ids = nil
           tag_ids.each do |tag_id|
+#            p SimpleTag::Tag.find(tag_id)
             taggable_ids = SimpleTag::Tagging.where(:tag_id => tag_id).where(:taggable_type => self.model_name).pluck(:taggable_id).to_a
             if ids
               ids = ids & taggable_ids
@@ -51,7 +52,7 @@ module SimpleTag
               ids = taggable_ids # first tag
             end
           end
-          joins(:taggings).where(:id => ids)
+          joins(:taggings).where(:id => ids).uniq
         else
           # :any
           joins(:taggings).where('simple_tag_taggings.tag_id' => tag_ids).uniq
@@ -59,13 +60,27 @@ module SimpleTag
 
       } do
         def in_context(context)
-          where("1 == 1")
+          if context.is_a?(String) || context.is_a?(Symbol)
+            context_id = SimpleTag::TagContext.where(:name => context.to_s).first
+          elsif context.is_a?(Integer)
+            context_id = context
+          else
+            raise SimpleTag::InvalidContext
+          end
+          where('simple_tag_taggings.tag_context_id = ?', context_id)
         end
 
         def by_tagger(tagger)
-          where("1 == 1")
+          if tagger.is_tagger?
+            tagger_id = tagger.id
+          elsif tagger.is_a?(Integer)
+            tagger_id = tagger
+          else
+            raise SimpleTag::InvalidTagger
+          end
+          where('simple_tag_taggings.tagger_id = ?', tagger_id)
         end
-      end
+      end # end of scope :with_tags
     end # end of included
 
     module ClassMethods

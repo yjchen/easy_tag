@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SimpleTag do
   describe 'taggable with_tags' do
-    it 'return match any tag' do
+    it 'return match tags' do
       post = Post.create(:name => 'post')
       post.set_tags('rails, ruby')
       java = Post.create(:name => 'java')
@@ -23,6 +23,26 @@ describe SimpleTag do
 
       Post.with_tags('rails, ruby', {:match => :all}).to_a.count.should eq(1)
       Post.with_tags('rails, ruby', {:match => :all}).pluck(:name).should match_array(['post'])
+    end
+
+    it 'return match tags in context and with tagger' do
+      user = User.create(:name => 'bob')
+      post = Post.create(:name => 'post')
+      post.set_tags('rails, ruby', :tagger => user)
+      skill = Post.create(:name => 'skill')
+      skill.set_tags('rails, ruby', :context => :skill)
+      java = Post.create(:name => 'java')
+      java.set_tags('java, jsp')
+      jruby = Post.create(:name => 'jruby')
+      jruby.set_tags('ruby, jruby', :context => :skill, :tagger => user)
+      comment = Comment.create(:name => 'comment')
+      comment.set_tags('rails, ruby')
+
+      Post.with_tags('rails').pluck(:name).should match_array(['post', 'skill'])
+      Post.with_tags('rails').in_context(:skill).pluck(:name).should match_array(['skill'])
+      Post.with_tags('rails').by_tagger(user).pluck(:name).should match_array(['post'])
+      Post.with_tags('ruby').by_tagger(user).pluck(:name).should match_array(['post', 'jruby'])
+      Post.with_tags('ruby').in_context(:skill).by_tagger(user).pluck(:name).should match_array(['jruby'])
     end
   end
 
