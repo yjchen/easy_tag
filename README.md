@@ -140,7 +140,7 @@ The first returns all tags associated with posts, including tags tagged by other
 
     Post.with_tags('ruby').in_context(nil)
 
-The first returns all tags with 'ruby', regardless the context. In another word, it return all taggables with any context. The second returns all tags with 'ruby' with context is nil. In another word, it will not return taggables with context. The same idea applies to __by_tagger__.
+The first returns all tags with 'ruby', regardless the context. In another word, it return all taggables with any context. The second returns all tags with 'ruby' with nil context. In another word, it will not return taggables where contextexists. The same idea applies to __by_tagger__.
 
 ## Acknowledges
 
