@@ -26,6 +26,8 @@ module SimpleTag
           tags = SimpleTag::Tag.compact_tag_list(tag_list, options.slice(:downcase, :delimiter))
         end
 
+        return where('1 == 2') if tags.nil?
+
         query = tags.collect { |t| "name = '#{t}'" }.join(' OR ')
         tag_ids = SimpleTag::Tag.where(query).pluck(:id)
 
@@ -81,10 +83,12 @@ module SimpleTag
       self.taggings.where(:tag_context_id => context.try(:id), :tagger_id => tagger.try(:id)).destroy_all
       # TODO: should remove unused tags and contexts
 
-      tags.each do |t|
-        tag = SimpleTag::Tag.where(:name => t).first_or_create
-        raise SimgleTag::InvalidTag if tag.nil?
-        self.taggings.where(:tagger_id => tagger.try(:id), :tag_context_id => context.try(:id), :tag_id => tag.id).first_or_create
+      if tags
+        tags.each do |t|
+          tag = SimpleTag::Tag.where(:name => t).first_or_create
+          raise SimgleTag::InvalidTag if tag.nil?
+          self.taggings.where(:tagger_id => tagger.try(:id), :tag_context_id => context.try(:id), :tag_id => tag.id).first_or_create
+        end
       end
     end
 

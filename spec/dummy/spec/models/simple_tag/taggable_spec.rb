@@ -144,6 +144,25 @@ describe SimpleTag do
     end
   end
 
+  it 'remove all tags' do
+    post = Post.create(:name => 'post')
+    user = User.create(:name => 'bob')
+
+    post.set_tags('rails, ruby')
+    post.tags.pluck(:name).should match_array(['rails', 'ruby'])
+
+    post.set_tags(nil)
+    post.tags.count.should eq(0)
+
+    post.set_tags('rails, ruby', :context => 'ruby', :tagger => user)
+    post.tags.pluck(:name).should match_array(['rails', 'ruby'])
+
+    post.set_tags(nil)
+    post.tags.count.should eq(2)
+    post.set_tags(nil, :context => 'ruby', :tagger => user)
+    post.tags.count.should eq(0)
+  end
+
   describe 'Basic' do
     it 'is taggable' do
       post = Post.new(:name => 'post')

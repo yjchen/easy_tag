@@ -89,7 +89,15 @@ This gem is used in my other projects, thus, it will be kept updated, albeit slo
 
   Options for __:match__ can be :any (default), :all (expensive).
 
-  __with_tags__ can also be used with __in_context__ and __by_tagger __
+  __with_tags__ can also be used with __in_context__ and __by_tagger__
+
+  To delete tags, set __nil__:
+
+    taggable.set_tags(nil)
+
+  To delete tags associated with context and tagger, include options __context__ and __tagger__:
+
+    taggable.set_tags(nil, :context => :skill, :tagger = User.first)
 
 ### Tag
 

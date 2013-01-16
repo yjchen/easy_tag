@@ -18,6 +18,8 @@ class SimpleTag::Tag < ActiveRecord::Base
       else
         tags = tag_list
       end
+    elsif tag_list.blank?
+      tags = nil
     else
       raise SimpleTag::InvalidTagList
     end
