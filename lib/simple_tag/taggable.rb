@@ -7,24 +7,12 @@ module SimpleTag
                :class_name => 'SimpleTag::Tagging'
       has_many :tags, :through => :taggings, :uniq => true do
         def in_context(context)
-          if context.is_a?(String) || context.is_a?(Symbol)
-            context_id = SimpleTag::TagContext.where(:name => context.to_s).first
-          elsif context.is_a?(Integer)
-            context_id = context
-          else
-            raise SimpleTag::InvalidContext
-          end
+          context_id = SimpleTag::TagContext.get_id(context)
           where('simple_tag_taggings.tag_context_id = ?', context_id)
         end
 
         def by_tagger(tagger)
-          if tagger.is_tagger?
-            tagger_id = tagger.id
-          elsif tagger.is_a?(Integer)
-            tagger_id = tagger
-          else
-            raise SimpleTag::InvalidTagger
-          end
+          tagger_id = SimpleTag::Tagger.get_id(tagger)
           where('simple_tag_taggings.tagger_id = ?', tagger_id)
         end
       end # end of has_many :tags
@@ -60,24 +48,12 @@ module SimpleTag
 
       } do
         def in_context(context)
-          if context.is_a?(String) || context.is_a?(Symbol)
-            context_id = SimpleTag::TagContext.where(:name => context.to_s).first
-          elsif context.is_a?(Integer)
-            context_id = context
-          else
-            raise SimpleTag::InvalidContext
-          end
+          context_id = SimpleTag::TagContext.get_id(context)
           where('simple_tag_taggings.tag_context_id = ?', context_id)
         end
 
         def by_tagger(tagger)
-          if tagger.is_tagger?
-            tagger_id = tagger.id
-          elsif tagger.is_a?(Integer)
-            tagger_id = tagger
-          else
-            raise SimpleTag::InvalidTagger
-          end
+          tagger_id = SimpleTag::Tagger.get_id(tagger)
           where('simple_tag_taggings.tagger_id = ?', tagger_id)
         end
       end # end of scope :with_tags
