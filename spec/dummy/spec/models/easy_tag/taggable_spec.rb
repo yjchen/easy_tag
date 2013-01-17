@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SimpleTag do
+describe EasyTag do
   describe 'taggable with_tags' do
     it 'return match tags' do
       post = Post.create(:name => 'post')
@@ -51,22 +51,22 @@ describe SimpleTag do
       post = Post.create(:name => 'post')
       expect {
         post.set_tags('rails, ruby')
-      }.to change(SimpleTag::TagContext, :count).by(0)
+      }.to change(EasyTag::TagContext, :count).by(0)
     end
 
     it 'clean old tags' do
       post = Post.create(:name => 'post')
       expect {
         post.set_tags('rails, ruby')
-      }.to change(SimpleTag::Tag, :count).by(2)
-      SimpleTag::Tagging.count.should eq(2)
+      }.to change(EasyTag::Tag, :count).by(2)
+      EasyTag::Tagging.count.should eq(2)
       post.taggings.count.should eq(2)
       post.tags.pluck(:name).should match_array(['rails', 'ruby'])
 
       expect {
         post.set_tags('java, jruby')
-      }.to change(SimpleTag::Tag, :count).by(2)
-      SimpleTag::Tagging.count.should eq(2)
+      }.to change(EasyTag::Tag, :count).by(2)
+      EasyTag::Tagging.count.should eq(2)
       post.taggings.count.should eq(2)
       post.tags.pluck(:name).should match_array(['java', 'jruby'])
     end
@@ -75,16 +75,16 @@ describe SimpleTag do
       post = Post.create(:name => 'post')
       expect {
         post.set_tags('rails, ruby')
-      }.to change(SimpleTag::Tag, :count).by(2)
-      SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby'])
+      }.to change(EasyTag::Tag, :count).by(2)
+      EasyTag::Tag.pluck(:name).should match_array(['rails', 'ruby'])
 
       post.tags.pluck(:name).should match_array(['rails', 'ruby'])
 
       comment = Comment.create(:name => 'comment')
       expect {
         comment.set_tags(['ruby', 'RVM'])
-      }.to change(SimpleTag::Tag, :count).by(1)
-      SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby', 'rvm'])
+      }.to change(EasyTag::Tag, :count).by(1)
+      EasyTag::Tag.pluck(:name).should match_array(['rails', 'ruby', 'rvm'])
 
       comment.tags.pluck(:name).should match_array(['ruby', 'rvm'])
     end
@@ -92,7 +92,7 @@ describe SimpleTag do
     it 'set tags in downcase' do
       post = Post.new(:name => 'post')
       post.set_tags('Rails, RUBY')
-      SimpleTag::Tag.pluck(:name).should match_array(['rails', 'ruby'])
+      EasyTag::Tag.pluck(:name).should match_array(['rails', 'ruby'])
     end
   end
 
@@ -101,18 +101,18 @@ describe SimpleTag do
       post = Post.create(:name => 'post')
       expect {
         post.set_tags('rails, ruby', :context => 'ruby')
-      }.to change(SimpleTag::TagContext, :count).by(1)
+      }.to change(EasyTag::TagContext, :count).by(1)
       expect {
         post.set_tags('jruby', :context => 'java')
-      }.to change(SimpleTag::TagContext, :count).by(1)
-      SimpleTag::TagContext.pluck(:name).should match_array(['ruby', 'java'])
+      }.to change(EasyTag::TagContext, :count).by(1)
+      EasyTag::TagContext.pluck(:name).should match_array(['ruby', 'java'])
       post.tags.pluck(:name).should match_array(['rails', 'ruby', 'jruby'])
       post.tags.in_context(:ruby).pluck(:name).should match_array(['rails', 'ruby'])
       post.tags.in_context(:java).pluck(:name).should match_array(['jruby'])
 
       comment = Comment.create(:name => 'comment')
       comment.set_tags(['ruby', 'RVM'], :context => 'ruby')
-      SimpleTag::TagContext.pluck(:name).should match_array(['ruby', 'java'])
+      EasyTag::TagContext.pluck(:name).should match_array(['ruby', 'java'])
       comment.tags.pluck(:name).should match_array(['ruby', 'rvm'])
       comment.tags.in_context(:ruby).pluck(:name).should match_array(['ruby', 'rvm'])
     end
@@ -125,7 +125,7 @@ describe SimpleTag do
 
       expect {
         post.set_tags('rails, ruby', :context => 'ruby', :tagger => user)
-      }.to change(SimpleTag::Tag, :count).by(2)
+      }.to change(EasyTag::Tag, :count).by(2)
 
       user.tags.pluck(:name).should match_array(['rails', 'ruby'])
 

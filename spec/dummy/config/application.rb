@@ -9,7 +9,7 @@ require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
 Bundler.require
-require "simple_tag"
+require "easy_tag"
 
 module Dummy
   class Application < Rails::Application

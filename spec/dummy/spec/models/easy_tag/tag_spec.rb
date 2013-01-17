@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-describe SimpleTag do
-  describe SimpleTag::Tag do
+describe EasyTag do
+  describe EasyTag::Tag do
     it 'compact tag list' do
-      tags = SimpleTag::Tag.compact_tag_list('ruby, rails')
+      tags = EasyTag::Tag.compact_tag_list('ruby, rails')
       tags.should match_array(['ruby', 'rails'])
 
-      tags = SimpleTag::Tag.compact_tag_list(['ruby', 'rails'])
+      tags = EasyTag::Tag.compact_tag_list(['ruby', 'rails'])
       tags.should match_array(['ruby', 'rails'])
 
-      tags = SimpleTag::Tag.compact_tag_list('ruby; rails', {:delimiter => ';'})
+      tags = EasyTag::Tag.compact_tag_list('ruby; rails', {:delimiter => ';'})
       tags.should match_array(['ruby', 'rails'])
 
-      tags = SimpleTag::Tag.compact_tag_list('ruby; Rails', {:delimiter => ';', :downcase => true})
+      tags = EasyTag::Tag.compact_tag_list('ruby; Rails', {:delimiter => ';', :downcase => true})
       tags.should match_array(['ruby', 'rails'])
 
     end
@@ -24,16 +24,16 @@ describe SimpleTag do
       post.set_tags('ruby, jruby')
       comment.set_tags('jruby, java')
 
-      SimpleTag::Tag.pluck(:name).should match_array(['ruby', 'jruby', 'java'])
+      EasyTag::Tag.pluck(:name).should match_array(['ruby', 'jruby', 'java'])
 
-      tag = SimpleTag::Tag.where(:name => 'ruby').first
+      tag = EasyTag::Tag.where(:name => 'ruby').first
       tag.taggings.collect(&:taggable).collect(&:name).should match_array(['post'])
 
-      tag = SimpleTag::Tag.where(:name => 'jruby').first
+      tag = EasyTag::Tag.where(:name => 'jruby').first
       tag.taggings.collect(&:taggable).collect(&:name).should match_array(['post', 'comment'])
 
       post.set_tags('ruby, rvm')
-      tag = SimpleTag::Tag.where(:name => 'jruby').first
+      tag = EasyTag::Tag.where(:name => 'jruby').first
       tag.taggings.collect(&:taggable).collect(&:name).should match_array(['comment'])
     end
 
@@ -44,14 +44,14 @@ describe SimpleTag do
       post.set_tags 'ruby, rvm', :tagger => user
       post.set_tags 'jruby, java'
 
-      tag = SimpleTag::Tag.where(:name => 'ruby').first
+      tag = EasyTag::Tag.where(:name => 'ruby').first
       tag.taggers.pluck(:name).should match_array(['bob'])
-      tag = SimpleTag::Tag.where(:name => 'java').first
+      tag = EasyTag::Tag.where(:name => 'java').first
       tag.taggers.pluck(:name).should be_empty
     end
 
     it 'can create tag' do
-      tag = SimpleTag::Tag.create(:name => 'tag')
+      tag = EasyTag::Tag.create(:name => 'tag')
       tag.should_not be_nil
     end
   end

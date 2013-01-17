@@ -1,6 +1,6 @@
-class SimpleTag::TagContext < ActiveRecord::Base
+class EasyTag::TagContext < ActiveRecord::Base
   has_many :taggings, :dependent => :destroy,
-                      :class_name => 'SimpleTag::Tagging'
+                      :class_name => 'EasyTag::Tagging'
   has_many :tags, :through => :taggings
 
   # Setup accessible (or protected) attributes for your model
@@ -12,7 +12,7 @@ class SimpleTag::TagContext < ActiveRecord::Base
     elsif context.is_a?(Integer)
       context_id = context
     else
-      raise SimpleTag::InvalidContext
+      raise EasyTag::InvalidContext
     end
     context_id
   end

@@ -1,4 +1,4 @@
-## SimpleTag
+## EasyTag
 
 This is a very simple tagging system for Rails. Because it is so simple, you should fork and modify it for your own purpose.
 
@@ -6,15 +6,15 @@ This gem is used in my other projects, thus, it will be kept updated, albeit slo
 
 ## Install
 
-    rails generate simple_tag:migration
+    rails generate easy_tag:migration
     rake db:migrate
     rake db:test:prepare
 
 ## Basic Usage
 
-  SimpleTag offers very few methods to manipulate tags. You mostly work
+  EasyTag offers very few methods to manipulate tags. You mostly work
   on adding and removing tags on taggable. For advanced usage, try
-  work on the assocation of SimpleTag models, or fork this project
+  work on the assocation of EasyTag models, or fork this project
   and extend its functionality.
 
 ### Tagger
@@ -128,7 +128,7 @@ This gem is used in my other projects, thus, it will be kept updated, albeit slo
 
 ## FAQ
 
-#### How do I get tag list from returned SimpleTag::Tag ?
+#### How do I get tag list from returned EasyTag::Tag ?
 
     tags.pluck(:name).join(', ')
 
@@ -152,7 +152,7 @@ The first returns all tags with 'ruby', regardless the context. In another word,
 
 ## Acknowledges
 
-SimpleTag is heavily influenced by [rocket_tag](https://github.com/bradphelan/rocket_tag), but not a direct fork.
+EasyTag is heavily influenced by [rocket_tag](https://github.com/bradphelan/rocket_tag), but not a direct fork.
 
 ## License
 

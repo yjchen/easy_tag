@@ -1,6 +1,6 @@
-class SimpleTag::Tag < ActiveRecord::Base
+class EasyTag::Tag < ActiveRecord::Base
   has_many :taggings, :dependent => :destroy, 
-                      :class_name => 'SimpleTag::Tagging'
+                      :class_name => 'EasyTag::Tagging'
   has_many :taggers, :through => :taggings
 
   # Setup accessible (or protected) attributes for your model
@@ -21,7 +21,7 @@ class SimpleTag::Tag < ActiveRecord::Base
     elsif tag_list.blank?
       tags = nil
     else
-      raise SimpleTag::InvalidTagList
+      raise EasyTag::InvalidTagList
     end
 
     tags

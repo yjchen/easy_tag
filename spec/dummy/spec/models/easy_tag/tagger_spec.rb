@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SimpleTag do
+describe EasyTag do
   describe 'with context and with tagger' do
     it 'in context' do
       post = Post.create(:name => 'post')
@@ -30,11 +30,11 @@ describe SimpleTag do
     end
   end
 
-  describe SimpleTag::Tagger do
+  describe EasyTag::Tagger do
     it 'is tagger' do
       user = User.new(:name => 'post')
       user.is_tagger?.should be_true
-      SimpleTag::Tagger.class_variable_get(:@@tagger_class).should eq(User)
+      EasyTag::Tagger.class_variable_get(:@@tagger_class).should eq(User)
     end
 
     it 'is not tagger' do

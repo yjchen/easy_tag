@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130114150014) do
+ActiveRecord::Schema.define(:version => 20130117032413) do
 
   create_table "comments", :force => true do |t|
     t.string   "name"
@@ -19,19 +19,13 @@ ActiveRecord::Schema.define(:version => 20130114150014) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "posts", :force => true do |t|
+  create_table "easy_tag_tag_contexts", :force => true do |t|
     t.string   "name"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
 
-  create_table "simple_tag_tag_contexts", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  create_table "simple_tag_taggings", :force => true do |t|
+  create_table "easy_tag_taggings", :force => true do |t|
     t.integer  "tag_id"
     t.integer  "tag_context_id"
     t.integer  "tagger_id"
@@ -41,12 +35,18 @@ ActiveRecord::Schema.define(:version => 20130114150014) do
     t.datetime "updated_at",     :null => false
   end
 
-  add_index "simple_tag_taggings", ["tag_context_id"], :name => "index_simple_tag_taggings_on_tag_context_id"
-  add_index "simple_tag_taggings", ["tag_id"], :name => "index_simple_tag_taggings_on_tag_id"
-  add_index "simple_tag_taggings", ["taggable_id", "taggable_type"], :name => "index_simple_tag_taggings_on_taggable_id_and_taggable_type"
-  add_index "simple_tag_taggings", ["tagger_id"], :name => "index_simple_tag_taggings_on_tagger_id"
+  add_index "easy_tag_taggings", ["tag_context_id"], :name => "index_easy_tag_taggings_on_tag_context_id"
+  add_index "easy_tag_taggings", ["tag_id"], :name => "index_easy_tag_taggings_on_tag_id"
+  add_index "easy_tag_taggings", ["taggable_id", "taggable_type"], :name => "index_easy_tag_taggings_on_taggable_id_and_taggable_type"
+  add_index "easy_tag_taggings", ["tagger_id"], :name => "index_easy_tag_taggings_on_tagger_id"
 
-  create_table "simple_tag_tags", :force => true do |t|
+  create_table "easy_tag_tags", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "posts", :force => true do |t|
     t.string   "name"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false

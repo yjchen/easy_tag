@@ -1,4 +1,4 @@
-module SimpleTag
+module EasyTag
   class Engine < ::Rails::Engine
   end
 end

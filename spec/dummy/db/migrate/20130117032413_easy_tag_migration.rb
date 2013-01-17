@@ -1,19 +1,19 @@
-class SimpleTagMigration < ActiveRecord::Migration
+class EasyTagMigration < ActiveRecord::Migration
 
   def change
-    create_table :simple_tag_tags do |t|
+    create_table :easy_tag_tags do |t|
       t.string :name
 
       t.timestamps
     end
 
-    create_table :simple_tag_tag_contexts do |t|
+    create_table :easy_tag_tag_contexts do |t|
       t.string :name
 
       t.timestamps
     end
 
-    create_table :simple_tag_taggings do |t|
+    create_table :easy_tag_taggings do |t|
       t.references :tag
       t.references :tag_context
       t.references :tagger
@@ -25,10 +25,10 @@ class SimpleTagMigration < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :simple_tag_taggings, :tag_id
-    add_index :simple_tag_taggings, :tagger_id
-    add_index :simple_tag_taggings, :tag_context_id
-    add_index :simple_tag_taggings, [:taggable_id, :taggable_type]
+    add_index :easy_tag_taggings, :tag_id
+    add_index :easy_tag_taggings, :tagger_id
+    add_index :easy_tag_taggings, :tag_context_id
+    add_index :easy_tag_taggings, [:taggable_id, :taggable_type]
   end
 
 end

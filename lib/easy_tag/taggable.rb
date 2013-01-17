@@ -1,19 +1,19 @@
-module SimpleTag
+module EasyTag
   module Taggable
     extend ActiveSupport::Concern
 
     included do
       has_many :taggings, :as => :taggable, :dependent => :destroy,
-               :class_name => 'SimpleTag::Tagging'
+               :class_name => 'EasyTag::Tagging'
       has_many :tags, :through => :taggings, :uniq => true do
         def in_context(context)
-          context_id = SimpleTag::TagContext.get_id(context)
-          where('simple_tag_taggings.tag_context_id = ?', context_id)
+          context_id = EasyTag::TagContext.get_id(context)
+          where('easy_tag_taggings.tag_context_id = ?', context_id)
         end
 
         def by_tagger(tagger)
-          tagger_id = SimpleTag::Tagger.get_id(tagger)
-          where('simple_tag_taggings.tagger_id = ?', tagger_id)
+          tagger_id = EasyTag::Tagger.get_id(tagger)
+          where('easy_tag_taggings.tagger_id = ?', tagger_id)
         end
       end # end of has_many :tags
 
@@ -23,19 +23,19 @@ module SimpleTag
         if block_given?
           tags = yield(klass)
         else
-          tags = SimpleTag::Tag.compact_tag_list(tag_list, options.slice(:downcase, :delimiter))
+          tags = EasyTag::Tag.compact_tag_list(tag_list, options.slice(:downcase, :delimiter))
         end
 
         return where('1 == 2') if tags.nil?
 
         query = tags.collect { |t| "name = '#{t}'" }.join(' OR ')
-        tag_ids = SimpleTag::Tag.where(query).pluck(:id)
+        tag_ids = EasyTag::Tag.where(query).pluck(:id)
 
         if options[:match] == :all
           ids = nil
           tag_ids.each do |tag_id|
-#            p SimpleTag::Tag.find(tag_id)
-            taggable_ids = SimpleTag::Tagging.where(:tag_id => tag_id).where(:taggable_type => self.model_name).pluck(:taggable_id).to_a
+#            p EasyTag::Tag.find(tag_id)
+            taggable_ids = EasyTag::Tagging.where(:tag_id => tag_id).where(:taggable_type => self.model_name).pluck(:taggable_id).to_a
             if ids
               ids = ids & taggable_ids
             else
@@ -45,18 +45,18 @@ module SimpleTag
           joins(:taggings).where(:id => ids).uniq
         else
           # :any
-          joins(:taggings).where('simple_tag_taggings.tag_id' => tag_ids).uniq
+          joins(:taggings).where('easy_tag_taggings.tag_id' => tag_ids).uniq
         end
 
       } do
         def in_context(context)
-          context_id = SimpleTag::TagContext.get_id(context)
-          where('simple_tag_taggings.tag_context_id = ?', context_id)
+          context_id = EasyTag::TagContext.get_id(context)
+          where('easy_tag_taggings.tag_context_id = ?', context_id)
         end
 
         def by_tagger(tagger)
-          tagger_id = SimpleTag::Tagger.get_id(tagger)
-          where('simple_tag_taggings.tagger_id = ?', tagger_id)
+          tagger_id = EasyTag::Tagger.get_id(tagger)
+          where('easy_tag_taggings.tagger_id = ?', tagger_id)
         end
       end # end of scope :with_tags
     end # end of included
@@ -73,7 +73,7 @@ module SimpleTag
       if block_given?
         tags = yield(klass)
       else
-        tags = SimpleTag::Tag.compact_tag_list(tag_list, options.slice(:downcase, :delimiter))
+        tags = EasyTag::Tag.compact_tag_list(tag_list, options.slice(:downcase, :delimiter))
       end
 
       context = compact_context(options[:context])
@@ -85,7 +85,7 @@ module SimpleTag
 
       if tags
         tags.each do |t|
-          tag = SimpleTag::Tag.where(:name => t).first_or_create
+          tag = EasyTag::Tag.where(:name => t).first_or_create
           raise SimgleTag::InvalidTag if tag.nil?
           self.taggings.where(:tagger_id => tagger.try(:id), :tag_context_id => context.try(:id), :tag_id => tag.id).first_or_create
         end
@@ -106,12 +106,12 @@ module SimpleTag
       return nil if context.blank?
 
       if (context.is_a?(String) || context.is_a?(Symbol))
-        return SimpleTag::TagContext.where(:name => context.to_s).first_or_create
+        return EasyTag::TagContext.where(:name => context.to_s).first_or_create
       elsif (context.is_a?(Integer))
-        return SimpleTag::TagContext.where(:id => context).first_or_create
+        return EasyTag::TagContext.where(:id => context).first_or_create
       end
 
-      raise SimpleTag::InvalidTagContext
+      raise EasyTag::InvalidTagContext
     end
 
     def compact_tagger(tagger)
@@ -119,15 +119,15 @@ module SimpleTag
       return tagger if tagger.is_tagger?
 
       if (tagger.is_a?(Integer))
-        if SimpleTag::Tagger.class_variable_defined?(:@@tagger_class)
-          klass = SimpleTag::Tagger.class_variable_get(:@@tagger_class)
+        if EasyTag::Tagger.class_variable_defined?(:@@tagger_class)
+          klass = EasyTag::Tagger.class_variable_get(:@@tagger_class)
           return klass.where(:id => tagger).first_or_create
         else
-          raise SimpleTag::NoTaggerDefined
+          raise EasyTag::NoTaggerDefined
         end
       end
 
-      raise SimpleTag::InvalidTagger
+      raise EasyTag::InvalidTagger
     end
   end
 end

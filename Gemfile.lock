@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    simple_tag (0.1.0)
+    easy_tag (0.1.0)
       rails (~> 3.2.11)
 
 GEM
@@ -105,7 +105,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  easy_tag!
   jquery-rails
   rspec-rails
-  simple_tag!
   sqlite3

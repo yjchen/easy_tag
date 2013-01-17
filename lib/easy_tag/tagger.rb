@@ -1,15 +1,15 @@
-module SimpleTag
+module EasyTag
   module Tagger
     extend ActiveSupport::Concern
 
     included do
       has_many :taggings, :dependent => :destroy,
-               :class_name => 'SimpleTag::Tagging',
+               :class_name => 'EasyTag::Tagging',
                :foreign_key => 'tagger_id'
       has_many :tags, :through => :taggings, :uniq => true do
         def in_context(context)
-          context_id = SimpleTag::TagContext.get_id(context)
-          where('simple_tag_taggings.tag_context_id = ?', context_id)
+          context_id = EasyTag::TagContext.get_id(context)
+          where('easy_tag_taggings.tag_context_id = ?', context_id)
         end
       end
     end # end of included
@@ -21,13 +21,13 @@ module SimpleTag
         elsif tagger.is_tagger?
           tagger_id = tagger.id
         else
-          raise SimpleTag::InvalidTagger
+          raise EasyTag::InvalidTagger
         end
         tagger_id
       end
     end # end of class methods
 
-    extend ClassMethods # to be use in SimpleTag::Tag module
+    extend ClassMethods # to be use in EasyTag::Tag module
 
     def is_tagger?
       return true
