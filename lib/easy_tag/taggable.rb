@@ -116,7 +116,6 @@ module EasyTag
 
     def compact_tagger(tagger)
       return nil if tagger.blank?
-      return tagger if tagger.is_tagger?
 
       if (tagger.is_a?(Integer))
         if EasyTag::Tagger.class_variable_defined?(:@@tagger_class)
@@ -125,6 +124,8 @@ module EasyTag
         else
           raise EasyTag::NoTaggerDefined
         end
+      elsif tagger.is_tagger?
+        return tagger
       end
 
       raise EasyTag::InvalidTagger
