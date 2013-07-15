@@ -1,6 +1,6 @@
 require 'easy_tag/engine'
-require 'easy_tag/taggable.rb'
-require 'easy_tag/tagger.rb'
+require 'easy_tag/taggable'
+require 'easy_tag/tagger'
 
 # For some reason, this does not work when set in app/models/easy_tag.rb
 # Therefore, it is put here.

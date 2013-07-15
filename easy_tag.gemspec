@@ -13,10 +13,13 @@ Gem::Specification.new do |s|
   s.summary     = "A very simple tagging system for Rails"
   s.description = "A very simple tagging system for Rails to be forked or extended."
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
+  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  s.test_files = Dir["test/**/*"]
+  s.signing_key = File.join(Dir.home,'/.gem/trust/gem-private_key.pem')
+  s.cert_chain = ['gem-public_cert.pem']
 
-  s.add_dependency "rails", "~> 3.2.11"
-  # s.add_dependency "jquery-rails"
+  s.add_dependency "rails", ">= 4.0.0"
 
   s.add_development_dependency "sqlite3"
+  s.add_development_dependency "minitest-rails"
 end
