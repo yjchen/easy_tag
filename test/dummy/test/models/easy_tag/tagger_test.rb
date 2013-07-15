@@ -1,6 +1,19 @@
-require 'spec_helper'
+require 'test_helper'
+
+def match_array(a, b)
+  a.sort.must_equal(b.sort)
+end
 
 describe EasyTag do
+  before :each do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.start
+  end
+
+  after :each do
+    DatabaseCleaner.clean
+  end
+
   describe 'with context and with tagger' do
     it 'in context' do
       post = Post.create(:name => 'post')
@@ -9,8 +22,8 @@ describe EasyTag do
       post.set_tags('rails, ruby, jruby', :context => 'ruby', :tagger => user)
       post.set_tags('java, jruby', :context => 'java', :tagger => user)
 
-      user.tags.in_context('ruby').pluck(:name).should match_array(['rails', 'ruby', 'jruby'])
-      user.tags.in_context('java').pluck(:name).should match_array(['java', 'jruby'])
+      match_array(user.tags.in_context('ruby').pluck(:name), ['rails', 'ruby', 'jruby'])
+      match_array(user.tags.in_context('java').pluck(:name), ['java', 'jruby'])
     end
 
     it 'get uniq tags' do
@@ -23,23 +36,23 @@ describe EasyTag do
       ruby = Post.create(:name => 'ruby')
       ruby.set_tags('ruby', :context => :skill, :tagger => user)
 
-      user.tags.count.should eq(1)
-      user.tags.pluck(:name).should match_array(['ruby'])
+      user.tags.count.must_equal(1)
+      match_array(user.tags.pluck(:name), ['ruby'])
 
-      post.tags.pluck(:name).should match_array(['ruby'])
+      match_array(post.tags.pluck(:name), ['ruby'])
     end
   end
 
   describe EasyTag::Tagger do
     it 'is tagger' do
       user = User.new(:name => 'post')
-      user.is_tagger?.should be_true
-      EasyTag::Tagger.class_variable_get(:@@tagger_class).should eq(User)
+      user.is_tagger?.must_equal(true)
+      EasyTag::Tagger.class_variable_get(:@@tagger_class).must_equal(User)
     end
 
     it 'is not tagger' do
       post = Post.new(:name => 'user')
-      post.is_tagger?.should be_false
+      post.is_tagger?.must_equal(false)
     end
   end
 end

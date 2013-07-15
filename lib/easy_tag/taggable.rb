@@ -5,7 +5,8 @@ module EasyTag
     included do
       has_many :taggings, :as => :taggable, :dependent => :destroy,
                :class_name => 'EasyTag::Tagging'
-      has_many :tags, :through => :taggings, :uniq => true do
+#      has_many :tags, :through => :taggings, :uniq => true do
+      has_many :tags, -> { distinct }, :through => :taggings do
         def in_context(context)
           context_id = EasyTag::TagContext.get_id(context)
           where('easy_tag_taggings.tag_context_id = ?', context_id)
@@ -34,8 +35,7 @@ module EasyTag
         if options[:match] == :all
           ids = nil
           tag_ids.each do |tag_id|
-#            p EasyTag::Tag.find(tag_id)
-            taggable_ids = EasyTag::Tagging.where(:tag_id => tag_id).where(:taggable_type => self.model_name).pluck(:taggable_id).to_a
+            taggable_ids = EasyTag::Tagging.where(:tag_id => tag_id, :taggable_type => self.model_name.to_s).pluck(:taggable_id)
             if ids
               ids = ids & taggable_ids
             else

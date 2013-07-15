@@ -6,7 +6,7 @@ module EasyTag
       has_many :taggings, :dependent => :destroy,
                :class_name => 'EasyTag::Tagging',
                :foreign_key => 'tagger_id'
-      has_many :tags, :through => :taggings, :uniq => true do
+      has_many :tags, -> { distinct }, :through => :taggings do
         def in_context(context)
           context_id = EasyTag::TagContext.get_id(context)
           where('easy_tag_taggings.tag_context_id = ?', context_id)

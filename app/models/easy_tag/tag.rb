@@ -3,9 +3,6 @@ class EasyTag::Tag < ActiveRecord::Base
                       :class_name => 'EasyTag::Tagging'
   has_many :taggers, :through => :taggings
 
-  # Setup accessible (or protected) attributes for your model
-  attr_accessible :name
-
   def self.compact_tag_list(tag_list, options = {})
     options.reverse_merge! :downcase => true, 
                            :delimiter => ','
