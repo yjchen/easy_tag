@@ -4,6 +4,101 @@ def match_array(a, b)
   a.sort.must_equal(b.sort)
 end
 
+# without context and tagger
+class TaggableTest < ActiveSupport::TestCase
+  test "no context" do
+    post = Post.create(:name => 'post')
+    assert_difference "EasyTag::TagContext.count", 0 do
+      post.set_tags('rails, ruby')
+    end
+  end
+  
+  test "clean old tags" do
+    post = Post.create(:name => 'post')
+    assert_difference "EasyTag::Tag.count", 2 do
+      post.set_tags('rails, ruby')
+    end
+    assert_equal 2, EasyTag::Tagging.count
+    assert_equal 2, post.taggings.count
+    assert_equal post.tags.pluck(:name).sort, ['rails', 'ruby'].sort
+
+    assert_difference "EasyTag::Tag.count", 2 do
+      post.set_tags('java, jruby')
+    end
+    assert_equal 2, EasyTag::Tagging.count
+    assert_equal 2, post.taggings.count
+    assert_equal post.tags.pluck(:name).sort, ['java', 'jruby'].sort
+  end
+
+  test 'set tags' do
+    post = Post.create(:name => 'post')
+    assert_difference "EasyTag::Tag.count", 2 do
+      post.set_tags('rails, ruby')
+    end
+    assert_equal EasyTag::Tag.pluck(:name).sort, ['rails', 'ruby'].sort
+    assert_equal post.tags.pluck(:name).sort,  ['rails', 'ruby'].sort
+
+    comment = Comment.create(:name => 'comment')
+    assert_difference "EasyTag::Tag.count", 1 do
+      comment.set_tags(['ruby', 'RVM'])
+    end
+    assert_equal EasyTag::Tag.pluck(:name).sort, ['rails', 'ruby', 'rvm'].sort
+    assert_equal comment.tags.pluck(:name).sort, ['ruby', 'rvm'].sort
+  end
+    
+  test 'set tags in downcase' do
+    post = Post.new(:name => 'post')
+    post.set_tags('Rails, RUBY')
+    assert_equal EasyTag::Tag.pluck(:name).sort, ['rails', 'ruby'].sort
+  end
+
+  # with context and without tagger
+  test 'set tags with context and without tagger' do
+    post = Post.create(:name => 'post')
+    assert_difference "EasyTag::TagContext.count", 1 do
+      post.set_tags('rails, ruby', :context => 'ruby')
+    end
+    assert_difference "EasyTag::TagContext.count", 1 do
+      post.set_tags('jruby', :context => 'java')
+    end
+    assert_equal EasyTag::TagContext.pluck(:name).sort, ['ruby', 'java'].sort
+    assert_equal post.tags.pluck(:name).sort, ['rails', 'ruby', 'jruby'].sort
+    assert_equal post.tags.in_context(:ruby).pluck(:name).sort, ['rails', 'ruby'].sort
+    assert_equal post.tags.in_context(:java).pluck(:name).sort, ['jruby']
+
+    comment = Comment.create(:name => 'comment')
+    comment.set_tags(['ruby', 'RVM'], :context => 'ruby')
+    assert_equal EasyTag::TagContext.pluck(:name).sort, ['ruby', 'java'].sort
+    assert_equal comment.tags.pluck(:name).sort, ['ruby', 'rvm'].sort
+    assert_equal comment.tags.in_context(:ruby).pluck(:name).sort, ['ruby', 'rvm'].sort
+  end
+
+  # with context and with tagger
+  test 'set tags with context and with tagger' do
+    post = Post.create(:name => 'post')
+    user = User.create(:name => 'bob')
+
+    assert_difference "EasyTag::Tag.count", 2 do
+      post.set_tags('rails, ruby', :context => 'ruby', :tagger => user)
+    end
+
+    assert_equal user.tags.pluck(:name).sort, ['rails', 'ruby'].sort
+
+    post.set_tags('jruby', :context => 'java')
+    assert_equal user.tags.pluck(:name).sort, ['rails', 'ruby'].sort
+
+    post.set_tags('java', :tagger => user)
+    assert_equal user.tags.pluck(:name).sort, ['rails', 'ruby', 'java'].sort
+
+    assert_equal post.tags.pluck(:name).sort, ['rails', 'ruby', 'jruby', 'java'].sort
+    assert_equal post.tags.in_context(:ruby).pluck(:name).sort, ['rails', 'ruby'].sort
+    assert_equal post.tags.in_context(:java).pluck(:name).sort, ['jruby']
+    assert_equal post.tags.in_context(:ruby).by_tagger(user).pluck(:name).sort, ['rails', 'ruby'].sort
+    assert_equal post.tags.in_context(:java).by_tagger(user).pluck(:name).count, 0
+    assert_equal post.tags.by_tagger(user).pluck(:name).sort, ['rails', 'ruby', 'java'].sort
+  end
+end
+
 describe EasyTag do
   before :each do
     DatabaseCleaner.strategy = :transaction
@@ -58,130 +153,25 @@ describe EasyTag do
       match_array(Post.with_tags('ruby').in_context(:skill).by_tagger(user).pluck(:name), ['jruby'])
     end
   end
-=begin
-  describe 'without context and tagger' do
-    it 'no context' do
-      post = Post.create(:name => 'post')
-      expect {
-        post.set_tags('rails, ruby')
-      }.to change(EasyTag::TagContext, :count).by(0)
-    end
 
-    it 'clean old tags' do
-      post = Post.create(:name => 'post')
-      expect {
-        post.set_tags('rails, ruby')
-      }.to change(EasyTag::Tag, :count).by(2)
-      EasyTag::Tagging.count.should eq(2)
-      post.taggings.count.should eq(2)
-      post.tags.pluck(:name).should match_array(['rails', 'ruby'])
-
-      expect {
-        post.set_tags('java, jruby')
-      }.to change(EasyTag::Tag, :count).by(2)
-      EasyTag::Tagging.count.should eq(2)
-      post.taggings.count.should eq(2)
-      post.tags.pluck(:name).should match_array(['java', 'jruby'])
-    end
-
-    it 'set tags' do
-      post = Post.create(:name => 'post')
-      expect {
-        post.set_tags('rails, ruby')
-      }.to change(EasyTag::Tag, :count).by(2)
-      EasyTag::Tag.pluck(:name).should match_array(['rails', 'ruby'])
-
-      post.tags.pluck(:name).should match_array(['rails', 'ruby'])
-
-      comment = Comment.create(:name => 'comment')
-      expect {
-        comment.set_tags(['ruby', 'RVM'])
-      }.to change(EasyTag::Tag, :count).by(1)
-      EasyTag::Tag.pluck(:name).should match_array(['rails', 'ruby', 'rvm'])
-
-      comment.tags.pluck(:name).should match_array(['ruby', 'rvm'])
-    end
-    
-    it 'set tags in downcase' do
-      post = Post.new(:name => 'post')
-      post.set_tags('Rails, RUBY')
-      EasyTag::Tag.pluck(:name).should match_array(['rails', 'ruby'])
-    end
-  end
-=end
-
-=begin
-  describe 'with context and without tagger' do
-    it 'set tags' do
-      post = Post.create(:name => 'post')
-      expect {
-        post.set_tags('rails, ruby', :context => 'ruby')
-      }.to change(EasyTag::TagContext, :count).by(1)
-      expect {
-        post.set_tags('jruby', :context => 'java')
-      }.to change(EasyTag::TagContext, :count).by(1)
-      EasyTag::TagContext.pluck(:name).should match_array(['ruby', 'java'])
-      post.tags.pluck(:name).should match_array(['rails', 'ruby', 'jruby'])
-      post.tags.in_context(:ruby).pluck(:name).should match_array(['rails', 'ruby'])
-      post.tags.in_context(:java).pluck(:name).should match_array(['jruby'])
-
-      comment = Comment.create(:name => 'comment')
-      comment.set_tags(['ruby', 'RVM'], :context => 'ruby')
-      EasyTag::TagContext.pluck(:name).should match_array(['ruby', 'java'])
-      comment.tags.pluck(:name).should match_array(['ruby', 'rvm'])
-      comment.tags.in_context(:ruby).pluck(:name).should match_array(['ruby', 'rvm'])
-    end
-  end
-=end
-
-=begin
-  describe 'with context and wit tagger' do
-    it 'set tags' do
-      post = Post.create(:name => 'post')
-      user = User.create(:name => 'bob')
-
-      expect {
-        post.set_tags('rails, ruby', :context => 'ruby', :tagger => user)
-      }.to change(EasyTag::Tag, :count).by(2)
-
-      user.tags.pluck(:name).should match_array(['rails', 'ruby'])
-
-      post.set_tags('jruby', :context => 'java')
-      user.tags.pluck(:name).should match_array(['rails', 'ruby'])
-
-      post.set_tags('java', :tagger => user)
-      user.tags.pluck(:name).should match_array(['rails', 'ruby', 'java'])
-
-      post.tags.pluck(:name).should match_array(['rails', 'ruby', 'jruby', 'java'])
-      post.tags.in_context(:ruby).pluck(:name).should match_array(['rails', 'ruby'])
-      post.tags.in_context(:java).pluck(:name).should match_array(['jruby'])
-      post.tags.in_context(:ruby).by_tagger(user).pluck(:name).should match_array(['rails', 'ruby'])
-      post.tags.in_context(:java).by_tagger(user).pluck(:name).should be_empty
-      post.tags.by_tagger(user).pluck(:name).should match_array(['rails', 'ruby', 'java'])
-    end
-  end
-=end
-
-=begin
   it 'remove all tags' do
     post = Post.create(:name => 'post')
     user = User.create(:name => 'bob')
 
     post.set_tags('rails, ruby')
-    post.tags.pluck(:name).should match_array(['rails', 'ruby'])
+    match_array(post.tags.pluck(:name), ['rails', 'ruby'])
 
     post.set_tags(nil)
-    post.tags.count.should eq(0)
+    post.tags.count.must_equal(0)
 
     post.set_tags('rails, ruby', :context => 'ruby', :tagger => user)
-    post.tags.pluck(:name).should match_array(['rails', 'ruby'])
+    match_array(post.tags.pluck(:name), ['rails', 'ruby'])
 
     post.set_tags(nil)
-    post.tags.count.should eq(2)
+    post.tags.count.must_equal(2)
     post.set_tags(nil, :context => 'ruby', :tagger => user)
-    post.tags.count.should eq(0)
+    post.tags.count.must_equal(0)
   end
-=end
 
   describe 'Basic' do
     it 'is taggable' do
