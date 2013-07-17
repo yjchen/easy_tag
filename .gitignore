@@ -14,7 +14,7 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
-/spec/dummy/tmp
+/test/dummy/tmp
 /public/assets/
 /config/secret_settings.yml
 

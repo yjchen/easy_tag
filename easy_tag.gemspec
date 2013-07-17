@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/yjchen/easy_tag"
   s.summary     = "A very simple tagging system for Rails"
   s.description = "A very simple tagging system for Rails to be forked or extended."
+  s.license     = 'MIT'
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
